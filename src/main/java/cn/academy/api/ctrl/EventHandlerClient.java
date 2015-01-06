@@ -13,10 +13,15 @@ import org.lwjgl.input.Keyboard;
 import cn.academy.api.ability.Category;
 import cn.academy.api.data.AbilityDataMain;
 import cn.academy.core.AcademyCraftMod;
+import cn.annoreg.core.RegistrationClass;
+import cn.annoreg.mc.RegEventHandler;
+import cn.annoreg.mc.RegMessageHandler;
+import cn.annoreg.mc.RegSubmoduleInit;
 import cn.liutils.api.LIGeneralRegistry;
 import cn.liutils.api.key.IKeyHandler;
 import cn.liutils.api.key.LIKeyProcess;
 import cn.liutils.api.register.Configurable;
+import cn.liutils.registry.ConfigurableRegistry.RegConfigurable;
 import cn.liutils.util.ClientUtils;
 import cn.liutils.util.GenericUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -27,12 +32,17 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Event handler class in client side. Setup key bindings and sync with server.
  * @author acaly
  *
  */
+@RegistrationClass
+@RegSubmoduleInit(side = RegSubmoduleInit.Side.CLIENT_ONLY)
+@RegConfigurable
+@SideOnly(Side.CLIENT)
 public class EventHandlerClient implements IKeyHandler {
 	
 	/**
@@ -72,6 +82,7 @@ public class EventHandlerClient implements IKeyHandler {
 	 * @author acaly
 	 *
 	 */
+	@RegMessageHandler(msg = ControlMessage.class, side = RegMessageHandler.Side.CLIENT)
 	public static class NetworkHandler implements IMessageHandler<ControlMessage, IMessage> {
 		
 		@Override
@@ -228,7 +239,8 @@ public class EventHandlerClient implements IKeyHandler {
 	@Configurable(category = "Control", key = "KEY_DISABLE", defValueInt = DEFAULT_KEY_DISABLE)
 	public static int KEY_DISABLE;
 	
-	private static final EventHandlerClient INSTANCE = new EventHandlerClient();
+	@RegEventHandler(RegEventHandler.Bus.FML)
+	public static final EventHandlerClient INSTANCE = new EventHandlerClient();
 	
 	private Category category;
 	
@@ -246,20 +258,13 @@ public class EventHandlerClient implements IKeyHandler {
 	 * Setup the key bindings and network.
 	 */
 	public static void init() {
-		LIGeneralRegistry.loadConfigurableClass(AcademyCraftMod.config, EventHandlerClient.class);
+		//LIGeneralRegistry.loadConfigurableClass(AcademyCraftMod.config, EventHandlerClient.class);
 		
 		LIKeyProcess.instance.addKey("Skill 1", KEY_S1, false, INSTANCE.new KeyHandler(0));
 		LIKeyProcess.instance.addKey("Skill 2", KEY_S2, false, INSTANCE.new KeyHandler(1));
 		LIKeyProcess.instance.addKey("Skill 3", KEY_S3, false, INSTANCE.new KeyHandler(2));
 		LIKeyProcess.instance.addKey("Skill 4", KEY_S4, false, INSTANCE.new KeyHandler(3));
 		LIKeyProcess.instance.addKey("Ability activation", KEY_DISABLE, false, INSTANCE);
-		
-		AcademyCraftMod.netHandler.registerMessage(NetworkHandler.class, ControlMessage.class, 
-				AcademyCraftMod.getNextChannelID(), Side.CLIENT);
-		AcademyCraftMod.netHandler.registerMessage(SkillStateMessage.Handler.class, SkillStateMessage.class, 
-				AcademyCraftMod.getNextChannelID(), Side.CLIENT);
-	
-		FMLCommonHandler.instance().bus().register(INSTANCE);
 	}
 	
 	public static PresetManager getPresetManager() {

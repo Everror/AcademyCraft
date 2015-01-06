@@ -14,7 +14,11 @@ import cn.academy.core.command.CmdDataView;
 import cn.academy.core.proxy.ProxyCommon;
 import cn.academy.core.register.ACBlocks;
 import cn.academy.core.register.ACItems;
+import cn.annoreg.core.RegistrationManager;
+import cn.annoreg.core.RegistrationMod;
+import cn.annoreg.mc.RegMessageHandler;
 import cn.liutils.api.register.LIGuiHandler;
+import cn.liutils.core.LIUtils;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -33,6 +37,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
  *
  */
 @Mod(modid = "academy-craft", name = "AcademyCraft", version = AcademyCraftMod.VERSION)
+@RegistrationMod(pkg = "cn.academy.", res = "academy", prefix = "ac_")
 public class AcademyCraftMod {
 
 	/**
@@ -65,6 +70,7 @@ public class AcademyCraftMod {
 	/**
 	 * 网络发包处理实例
 	 */
+	@RegMessageHandler.WrapperInstance
 	public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel(AcademyCraftMod.NET_CHANNEL);
 	
 	/**
@@ -86,8 +92,8 @@ public class AcademyCraftMod {
 	public void preInit(FMLPreInitializationEvent event) {
 
 		config = new Configuration(event.getSuggestedConfigurationFile());
+        RegistrationManager.INSTANCE.registerAll(this, LIUtils.REGISTER_TYPE_CONFIGURABLE);
 		
-		AbilityDataMain.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(INSTANCE, guiHandler);
 		proxy.preInit();
 	}
@@ -95,9 +101,18 @@ public class AcademyCraftMod {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		
-		ACItems.init(config);
-		ACBlocks.init(config);
-		
+        RegistrationManager.INSTANCE.registerAll(this, "Block");
+        RegistrationManager.INSTANCE.registerAll(this, "Item");
+        RegistrationManager.INSTANCE.registerAll(this, "TileEntity");
+        RegistrationManager.INSTANCE.registerAll(this, "Entity");
+        RegistrationManager.INSTANCE.registerAll(this, "SubmoduleInit");
+        RegistrationManager.INSTANCE.registerAll(this, "EventHandler");
+        RegistrationManager.INSTANCE.registerAll(this, "MessageHandler");
+        
+        RegistrationManager.INSTANCE.registerAll(this, LIUtils.REGISTER_TYPE_AUXGUI);
+        
+        RegistrationManager.INSTANCE.registerAll(this, "Ability");
+        
 		proxy.init();
 	}
 
@@ -108,10 +123,7 @@ public class AcademyCraftMod {
 	
 	@EventHandler()
 	public void serverStarting(FMLServerStartingEvent event) {
-		CommandHandler cm = (CommandHandler) event.getServer()
-				.getCommandManager();
-		cm.registerCommand(new CmdDataSet());
-		cm.registerCommand(new CmdDataView());
+		RegistrationManager.INSTANCE.registerAll(this, "Command");
 	}
 	
 	private static int nextNetID = 0;

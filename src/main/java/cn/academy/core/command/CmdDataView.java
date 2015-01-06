@@ -9,6 +9,8 @@ import cn.academy.api.ability.Category;
 import cn.academy.api.ability.Level;
 import cn.academy.api.data.AbilityData;
 import cn.academy.api.data.AbilityDataMain;
+import cn.annoreg.core.RegistrationClass;
+import cn.annoreg.mc.RegCommand;
 import cn.liutils.template.command.LICommandBase;
 import cn.liutils.util.DebugUtils;
 
@@ -16,6 +18,8 @@ import cn.liutils.util.DebugUtils;
  * 显示玩家当前的能力信息（服务端）
  * @author WeathFolD
  */
+@RegistrationClass
+@RegCommand
 public class CmdDataView extends LICommandBase {
 
 	public CmdDataView() {
