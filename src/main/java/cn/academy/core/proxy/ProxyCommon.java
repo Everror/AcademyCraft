@@ -6,6 +6,8 @@ import cn.academy.ability.electro.CatElectro;
 import cn.academy.ability.electro.entity.EntityRailgun;
 import cn.academy.ability.meltdowner.CatMeltDowner;
 import cn.academy.ability.meltdowner.entity.EntityElecDart;
+import cn.academy.ability.teleporter.CatTeleporter;
+import cn.academy.ability.teleporter.entity.EntityTpTarget;
 import cn.academy.api.ability.Abilities;
 import cn.academy.api.ctrl.EventHandlerServer;
 import cn.academy.core.AcademyCraftMod;
@@ -29,12 +31,14 @@ public class ProxyCommon {
 		//Entity Registry
 		registerEntity(EntityRailgun.class, "ac_railgun", nextEntityId());
 		registerEntity(EntityElecDart.class, "ac_elecdart", nextEntityId());
+		registerEntity(EntityTpTarget.class, "ac_tpTarget", nextEntityId());
 		
 		//----------
 		//Abilities registry
 		
 		Abilities.registerCat(new CatElectro());
 		Abilities.registerCat(new CatMeltDowner());
+		Abilities.registerCat(new CatTeleporter());
 		
 		//----------
 	}

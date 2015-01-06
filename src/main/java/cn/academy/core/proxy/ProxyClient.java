@@ -10,6 +10,8 @@ import cn.academy.ability.electro.client.render.RenderRailgun;
 import cn.academy.ability.electro.entity.EntityRailgun;
 import cn.academy.ability.meltdowner.client.render.RenderElecDart;
 import cn.academy.ability.meltdowner.entity.EntityElecDart;
+import cn.academy.ability.teleporter.client.render.RenderTpTarget;
+import cn.academy.ability.teleporter.entity.EntityTpTarget;
 import cn.academy.api.ctrl.EventHandlerClient;
 import cn.academy.api.ctrl.PresetManager;
 import cn.academy.core.AcademyCraftMod;
@@ -97,6 +99,7 @@ public class ProxyClient extends ProxyCommon {
 		RenderingRegistry.registerEntityRenderingHandler(EntityThrowingCoin.class, new RendererCoin());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRailgun.class, new RenderRailgun());
 		RenderingRegistry.registerEntityRenderingHandler(EntityElecDart.class, new RenderElecDart());
+		RenderingRegistry.registerEntityRenderingHandler(EntityTpTarget.class, new RenderTpTarget());
 		
 		MinecraftForgeClient.registerItemRenderer(ACItems.ivoid, new RenderVoid());
 		MinecraftForgeClient.registerItemRenderer(ACItems.coin, new RendererCoin.ItemRender());
